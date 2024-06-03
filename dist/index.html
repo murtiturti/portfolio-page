@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Murat Diken</title>
+		<style>
+			body { 
+				margin: 0; 
+				overflow: hidden;
+				font-family: 'Courier New', Courier, monospace;
+			}
+			#info {
+				position: absolute;
+				top: 10px;
+				left: 10px;
+				background: rgba(255, 255, 255, 0.8);
+				padding: 10px;
+				border-radius: 5px;
+				max-width: 300px;
+				transition: transform 0.3s ease;
+			}
+
+			#info.collapsed {
+				transform: translateY(-100%);
+			}
+
+			#toggle-button {
+				font-family: 'Courier New', Courier, monospace;
+				position: absolute;
+				top: 10px;
+				left: 10px;
+				background: #008cba;
+				color: white;
+				border: none;
+				padding: 10px;
+				border-radius: 5px;
+				cursor: pointer;
+				z-index: 1;
+			}
+
+			#toggle-button.collapsed {
+				top: 10px;
+			}
+
+			#headerWrapper {
+				text-align: center;
+				border-bottom: 1px solid grey;
+			}
+
+			#car-sound-fx-toggle {
+				position: absolute;
+				left: 10px;
+				bottom: 10px;
+				z-index: 1;
+				width: 50px;
+				height: 50px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 0;
+				background: white;
+				cursor: pointer;
+				border-radius: 50%;
+				overflow: hidden;
+			}
+			#car-sound-fx-toggle img {
+				width: 50%;
+				height: 50%;
+			}
+
+			canvas {
+				display: block;
+			}
+		</style>
+		<script type="module" crossorigin src="/assets/index-C3APHIej.js"></script>
+	</head>
+	<body>
+		<button id="car-sound-fx-toggle" class="ui"><img src="data:image/svg+xml,%3c?xml%20version='1.0'%20encoding='UTF-8'%20standalone='no'?%3e%3csvg%20xmlns='http://www.w3.org/2000/svg'%20version='1.0'%20width='500'%20height='500'%20viewBox='0%200%2075%2075'%3e%3cpath%20d='M39.389,13.769%20L22.235,28.606%20L6,28.606%20L6,47.699%20L21.989,47.699%20L39.389,62.75%20L39.389,13.769z'%20style='stroke:%23111;stroke-width:5;stroke-linejoin:round;fill:%23111;'%20/%3e%3cpath%20d='M48,27.6a19.5,19.5%200%200%201%200,21.4M55.1,20.5a30,30%200%200%201%200,35.6M61.6,14a38.8,38.8%200%200%201%200,48.6'%20style='fill:none;stroke:%23111;stroke-width:5;stroke-linecap:round'/%3e%3c/svg%3e" id="car-sound-icon"></button>
+		<button id="toggle-button" class="ui">Hide</button>
+		<div id="info" class="ui">
+			<div id="headerWrapper" class="ui">
+				<h3 id="header" class="ui">Welcome!</h3>
+			</div>
+			<div id="info-content" class="ui">
+				<p class="ui">Click and hold to start the engine <br> Release to stop</p>
+				<p class="ui">Click on billboards to zoom in</p>
+				<p class="ui">Click outside of the billboard when zoomed in to go back to car view</p>
+				<p class="ui">Enjoy!</p>
+			</div>
+			
+		</div>
+		<script id="vertexshader" type="vertex">
+			varying vec2 vUv;
+			void main() {
+				vUv = uv;
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+			}
+		</script>
+		<script id="fragmentshader" type="fragment">
+			uniform sampler2D baseTexture;
+			uniform sampler2D bloomTexture; 
+			varying vec2 vUv;
+			void main() {
+				gl_FragColor = (texture2D(baseTexture, vUv) + vec4(1.0) * texture2D(bloomTexture, vUv));
+			}
+		</script>
+		<script>
+			const infoDiv = document.getElementById('info');
+			const toggleButton = document.getElementById('toggle-button');
+
+			toggleButton.addEventListener('click', () => {
+				if (infoDiv.classList.contains('collapsed')) {
+					infoDiv.classList.remove('collapsed');
+					toggleButton.textContent = 'Hide';
+				}
+				else {
+					infoDiv.classList.add('collapsed');
+					toggleButton.textContent = 'Show';
+				}
+			});
+		</script>
+	</body>
+</html>
